@@ -1,0 +1,25 @@
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+import time
+
+class MyModel(models.Model):
+    name = models.CharField(max_length=100)
+
+# Signal handler with a delay to simulate a long-running process
+@receiver(post_save, sender=MyModel)
+def my_signal_handler(sender, instance, **kwargs):
+    print("Signal received. Starting work...")
+    time.sleep(5)  # Introduce a 5-second delay
+    print("Signal handler finished work.")
+from myapp.models import MyModel
+import time
+
+# Create a new MyModel instance
+print("Starting signal test...")
+start_time = time.time()
+
+obj = MyModel.objects.create(name="Test Object")
+
+end_time = time.time()
+print(f"Total time taken: {end_time - start_time} seconds")
